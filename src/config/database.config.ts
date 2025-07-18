@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { Psychologist, TimeSlot, User } from '../entities';
 
 export const getDatabaseConfig = (): TypeOrmModuleOptions => {
   const isProduction = process.env.NODE_ENV === 'production';
@@ -7,7 +8,7 @@ export const getDatabaseConfig = (): TypeOrmModuleOptions => {
   return {
     type: 'postgres',
     url: process.env.DATABASE_URL,
-    entities: ['dist/**/*.entity.js'],
+    entities: [Psychologist, TimeSlot, User],
     synchronize: false,
     logging: !isProduction,
     namingStrategy: new SnakeNamingStrategy(),
