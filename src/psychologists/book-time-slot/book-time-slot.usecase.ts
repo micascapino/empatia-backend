@@ -16,15 +16,15 @@ export class BookTimeSlotUseCase {
             const timeSlot = await this.psychologistRepository.findTimeSlotById(request.timeSlotId);
 
             if (!timeSlot || !timeSlot.available) {
-                throw new NotFoundException('Slot no disponible.');
+                throw new NotFoundException('Slot not available.');
             }
 
             if (request.sessionType === 'virtual' && !timeSlot.virtualSession) {
-                throw new BadRequestException('Este horario no está disponible para sesiones virtuales');
+                throw new BadRequestException('This time slot is not available for virtual sessions');
             }
 
             if (request.sessionType === 'clinic' && !timeSlot.clinicSession) {
-                throw new BadRequestException('Este horario no está disponible para sesiones presenciales');
+                throw new BadRequestException('This time slot is not available for clinic sessions');
             }
 
             const user = await this.psychologistRepository.findOrCreateUser({
@@ -47,7 +47,7 @@ export class BookTimeSlotUseCase {
 
             return response;
         } catch (error) {
-            this.logger.error(`Error al reservar slot - ID: ${request.timeSlotId}`, error);
+            this.logger.error(`Error booking time slot - ID: ${request.timeSlotId}`, error);
             throw error;
         }
     }

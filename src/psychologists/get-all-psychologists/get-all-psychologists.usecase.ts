@@ -33,8 +33,8 @@ export class GetAllPsychologistsUseCase {
         total: psychologists.length,
       };
     } catch (error) {
-      this.logger.error('Error al obtener psicólogos:', error);
-      throw new Error('Error al obtener la lista de psicólogos');
+      this.logger.error('Error getting psychologists:', error);
+      throw new Error('Error getting psychologists');
     }
   }
 } 

@@ -1,4 +1,4 @@
-import { Controller, Get, Param, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Param, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { GetPsychologistWithAvailabilityUseCase } from './get-psychologist-with-availability.usecase';
 import { GetPsychologistWithAvailabilityRequestDto } from './dto/get-psychologist-with-availability.request.dto';
@@ -32,14 +32,14 @@ export class GetPsychologistWithAvailabilityController {
       const request: GetPsychologistWithAvailabilityRequestDto = { id };
       return await this.getPsychologistWithAvailabilityUseCase.execute(request);
     } catch (error) {
-      if (error.message === 'Psicólogo no encontrado') {
+      if (error instanceof NotFoundException) {
         throw new HttpException(
-          'Psicólogo no encontrado',
+          'Psychologist not found',
           HttpStatus.NOT_FOUND
         );
       }
       throw new HttpException(
-        'Error al obtener psicólogo',
+        'Error getting psychologist',
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }

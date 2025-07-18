@@ -26,7 +26,7 @@ export class GetAllPsychologistsController {
       return await this.getAllPsychologistsUseCase.execute();
     } catch (error) {
       throw new HttpException(
-        'Error al obtener psicólogos',
+        'Error getting psychologists',
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }

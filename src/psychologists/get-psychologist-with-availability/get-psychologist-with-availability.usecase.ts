@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PsychologistRepository } from '../infrastructure/repositories/psychologist.repository';
 import { GetPsychologistWithAvailabilityRequestDto } from './dto/get-psychologist-with-availability.request.dto';
 import { PsychologistWithAvailabilityResponseDto } from './dto/get-psychologist-with-availability.response.dto';
@@ -18,13 +18,12 @@ export class GetPsychologistWithAvailabilityUseCase {
       const psychologist = await this.psychologistRepository.findByIdWithTimeSlots(request.id);
 
       if (!psychologist) {
-        this.logger.warn(`Psicólogo no encontrado - ID: ${request.id}`);
-        throw new Error('Psicólogo no encontrado');
+        throw new NotFoundException('Psychologist not found');
       }
 
       return PsychologistWithAvailabilityMapper.toResponseDto(psychologist);
     } catch (error) {
-      this.logger.error(`Error al obtener psicólogo con disponibilidad - ID: ${request.id}`, error);
+      this.logger.error(`Error getting psychologist with availability - ID: ${request.id}`, error);
       throw error;
     }
   }
