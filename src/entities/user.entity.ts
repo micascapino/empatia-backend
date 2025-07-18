@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { TimeSlot } from '@/entities'
+import { TimeSlot } from '../entities';
 
 @Entity('users')
 export class User {

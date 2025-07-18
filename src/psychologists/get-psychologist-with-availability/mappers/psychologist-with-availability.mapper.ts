@@ -1,4 +1,4 @@
-import { Psychologist, TimeSlot } from '@/entities';
+import { Psychologist, TimeSlot } from '../../../../src/entities';
 import { PsychologistWithAvailabilityResponseDto, TimeSlotResponseDto } from '../dto/get-psychologist-with-availability.response.dto';
 
 export class PsychologistWithAvailabilityMapper {

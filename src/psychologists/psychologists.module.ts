@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Psychologist, TimeSlot, User } from '@/entities';
+import { Psychologist, TimeSlot, User } from '../../src/entities';
 
 import { PsychologistRepository } from './infrastructure/repositories/psychologist.repository';
 
