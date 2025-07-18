@@ -9,26 +9,24 @@ import { GetAvailableTimeSlotsResponseDto } from './dto/get-available-time-slots
 export class GetAvailableTimeSlotsController {
   constructor(
     private readonly getAvailableTimeSlotsUseCase: GetAvailableTimeSlotsUseCase,
-  ) {}
+  ) { }
 
   @Get('slots/available')
-  @ApiOperation({ summary: 'Obtener turnos disponibles entre fechas con filtros opcionales' })
+  @ApiOperation({ summary: 'Obtener turnos disponibles entre fechas ' })
   @ApiQuery({ name: 'startDate', description: 'Fecha de inicio (YYYY-MM-DD)', example: '2024-01-15' })
   @ApiQuery({ name: 'endDate', description: 'Fecha de fin (YYYY-MM-DD)', example: '2024-01-21' })
-  @ApiQuery({ name: 'psychologistName', description: 'Nombre del psicólogo (opcional)', required: false })
-  @ApiQuery({ name: 'specializations', description: 'Especialidades (opcional, separadas por coma)', required: false })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Turnos disponibles obtenidos exitosamente',
     type: GetAvailableTimeSlotsResponseDto
   })
-  @ApiResponse({ 
-    status: 400, 
-    description: 'Parámetros inválidos' 
+  @ApiResponse({
+    status: 400,
+    description: 'Parámetros inválidos'
   })
-  @ApiResponse({ 
-    status: 500, 
-    description: 'Error interno del servidor' 
+  @ApiResponse({
+    status: 500,
+    description: 'Error interno del servidor'
   })
   async getAvailableTimeSlots(
     @Query('startDate') startDate: string,
