@@ -1,171 +1,260 @@
-# Backend API - Empatía Online Sessions
+# Empatía Backend API
 
-API REST para gestionar psicólogos y sus horarios disponibles, construida con NestJS y PostgreSQL.
+A robust NestJS backend API for managing online psychology sessions and professional bookings.
 
-## Características
+**API Documentation**: [https://empatia-backend.vercel.app/api](https://empatia-backend.vercel.app/api)
 
-- ✅ Gestión de psicólogos con información completa
-- ✅ Horarios disponibles por psicólogo
-- ✅ API REST con documentación Swagger
-- ✅ Integración con PostgreSQL usando TypeORM
-- ✅ Sistema de migraciones
-- ✅ Validación de datos con DTOs
-- ✅ Manejo de errores centralizado
+## 🚀 Features
 
-## Tecnologías
+- **Professional Management**: Complete CRUD operations for psychologists with detailed profiles
+- **Time Slot System**: Advanced scheduling system with availability tracking
+- **Booking Engine**: Secure booking flow with session type validation
+- **Real-time Data**: Optimized queries with TypeORM for fast response times
+- **CORS Support**: Configured for seamless frontend integration
+- **API Documentation**: Auto-generated Swagger documentation
+- **Database Migrations**: Version-controlled database schema management
 
-- **NestJS**: Framework de Node.js
-- **TypeScript**: Lenguaje de programación
-- **PostgreSQL**: Base de datos
-- **TypeORM**: ORM para PostgreSQL
-- **Swagger**: Documentación de API
-- **Jest**: Testing framework
+## 🛠️ Tech Stack
 
-## Configuración
+- **Backend Framework**: NestJS + TypeScript
+- **Database**: PostgreSQL with TypeORM
+- **API Documentation**: Swagger/OpenAPI
+- **Validation**: class-validator + class-transformer
+- **Deployment**: Vercel
+- **Database Hosting**: Supabase/Neon (PostgreSQL)
 
-### 1. Instalar dependencias
+## 📦 Installation
+
+### Prerequisites
+
+- Node.js 18+
+- PostgreSQL database (local or cloud)
+- npm or yarn
+
+### Setup
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd empatia-backend
+
+# Install dependencies
 npm install
-```
 
-### 2. Configurar PostgreSQL
-
-Asegúrate de tener PostgreSQL instalado y ejecutándose en tu sistema.
-
-### 3. Configurar variables de entorno
-
-Copia el archivo de ejemplo y configura tus credenciales de PostgreSQL:
-
-```bash
+# Set up environment variables
 cp env.example .env
-```
+# Configure your DATABASE_URL and other variables
 
-Edita el archivo `.env` con tus credenciales:
-
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=postgres
-DB_PASSWORD=tu_password
-DB_DATABASE=empatia_sessions
-PORT=3001
-NODE_ENV=development
-FRONTEND_URL=url
-```
-
-### 4. Configuración automática (Recomendado)
-
-Ejecuta el script de configuración que te guiará paso a paso:
-
-```bash
-./setup-db.sh
-```
-
-### 4. Configuración manual
-
-Si prefieres configurar manualmente:
-
-```bash
-# Conectar a PostgreSQL
-psql -U postgres
-
-# Crear la base de datos
-CREATE DATABASE empatia_sessions;
-
-# Salir de psql
-\q
-
-# Ejecutar migraciones
+# Run database migrations
 npm run migration:run
-```
 
-## Ejecución
-
-### Desarrollo
-
-```bash
+# Start development server
 npm run start:dev
 ```
 
-### Producción
+The API will be available at `http://localhost:3001`
 
-```bash
-npm run build
-npm run start:prod
+## 🔧 Environment Variables
+
+Create a `.env` file with the following variables:
+
+```env
+# Database Configuration
+DATABASE_URL=postgresql://username:password@host:port/database
+
+# Application Configuration
+NODE_ENV=development
+PORT=3001
+
+# Frontend URL for CORS
+FRONTEND_URL=https://empatia-online-sessions.vercel.app
 ```
 
-## Endpoints
+### Production Setup (Vercel)
 
-### Psicólogos
+Configure these environment variables in your Vercel dashboard:
 
-- `GET /psychologists` - Obtener todos los psicólogos
-- `GET /psychologists/:id` - Obtener psicólogo por ID con horarios disponibles
-- `GET /psychologists/:id/time-slots` - Obtener horarios disponibles de un psicólogo
+```env
+DATABASE_URL=your-production-database-url
+NODE_ENV=production
+FRONTEND_URL=https://empatia-online-sessions.vercel.app
+```
 
-### Documentación
-
-La documentación de la API está disponible en: `http://localhost:3001/api`
-
-## Estructura del Proyecto
+## 📁 Project Structure
 
 ```
 src/
-├── entities/          # Entidades de TypeORM
+├── config/                    # Configuration files
+│   └── database.config.ts     # TypeORM configuration
+├── entities/                  # TypeORM entities
 │   ├── psychologist.entity.ts
-│   └── time-slot.entity.ts
-├── migrations/        # Migraciones de base de datos
-├── common/
-│   ├── dto/           # Data Transfer Objects
-│   └── interfaces/    # Interfaces TypeScript
-├── psychologists/     # Módulo de psicólogos
-│   ├── psychologists.controller.ts
-│   ├── psychologists.service.ts
+│   ├── time-slot.entity.ts
+│   ├── user.entity.ts
+│   └── index.ts
+├── psychologists/             # Psychologists module
+│   ├── get-all-psychologists/
+│   ├── get-psychologist-with-availability/
+│   ├── get-available-time-slots/
+│   ├── book-time-slot/
+│   ├── infrastructure/
 │   └── psychologists.module.ts
-├── app.module.ts      # Módulo principal
-└── main.ts           # Punto de entrada
+├── common/                    # Shared resources
+│   ├── dto/                   # Data Transfer Objects
+│   └── interfaces/            # TypeScript interfaces
+├── database/                  # Database migrations
+│   └── migrations/
+├── app.module.ts              # Root module
+└── main.ts                    # Application entry point
 ```
 
-## Comandos de Migración
+## 🎯 Key Features
+
+### Professional Directory API
+- **GET /psychologists**: Retrieve all psychologists with availability counts
+- **GET /psychologists/:id**: Get specific psychologist with detailed profile
+- **Smart Filtering**: Built-in filtering by specialization, rating, and availability
+
+### Time Slot Management
+- **GET /psychologists/:id/time-slots**: Get available time slots for a psychologist
+- **Date Range Queries**: Filter slots by specific date ranges
+- **Availability Tracking**: Real-time availability status updates
+
+### Booking System
+- **POST /psychologists/:id/book**: Complete booking flow
+- **Session Type Support**: Virtual and clinic session options
+- **User Management**: Automatic user creation and session tracking
+
+### Data Validation
+- **DTO Validation**: Comprehensive input validation with class-validator
+- **Type Safety**: Full TypeScript support throughout the application
+- **Error Handling**: Centralized error handling with detailed logging
+
+## 🧠 Technical Decisions & Architecture
+
+### Database Design
+
+#### **Entity Relationships**
+- **Psychologist** ↔ **TimeSlot**: One-to-many relationship
+- **User** ↔ **TimeSlot**: One-to-many relationship for bookings
+- **Normalized Design**: Efficient queries with proper indexing
+
+#### **Time Slot Strategy**
+- **Decision**: Store individual time slots rather than recurring patterns
+- **Rationale**: 
+  - More flexible for irregular schedules
+  - Easier to handle cancellations and modifications
+  - Better for real-time availability tracking
+- **Implementation**: 30-minute slot intervals with availability flags
+
+### API Design Patterns
+
+#### **Use Case Architecture**
+- **Decision**: Separate use cases for each business operation
+- **Structure**:
+  ```
+  feature/
+  ├── usecase/
+  ├── controller/
+  ├── dto/
+  └── infrastructure/
+  ```
+- **Benefits**:
+  - Clear separation of concerns
+  - Easy to test individual components
+  - Scalable architecture for new features
+
+#### **Repository Pattern**
+- **Decision**: Abstract database operations behind repository interfaces
+- **Implementation**: TypeORM repositories with custom query methods
+- **Benefits**:
+  - Database-agnostic business logic
+  - Easy to mock for testing
+  - Centralized data access logic
+
+### Performance Optimizations
+
+#### **Query Optimization**
+- **Problem**: N+1 queries when loading psychologists with availability counts
+- **Solution**: Custom SQL queries with subqueries for availability counts
+- **Result**: Single query per request with all necessary data
+
+#### **Caching Strategy**
+- **Decision**: Database-level caching with connection pooling
+- **Implementation**: TypeORM connection pool with optimized settings
+- **Benefits**: Reduced database load and improved response times
+
+#### **CORS Configuration**
+- **Decision**: Whitelist approach for security
+- **Implementation**: Dynamic CORS configuration based on environment
+- **Security**: Only allows requests from trusted frontend domains
+
+## 🚀 Deployment
+
+### Vercel Deployment
+
+The API is automatically deployed to Vercel:
+
+1. Push changes to the main branch
+2. Vercel automatically builds and deploys
+3. Available at [https://empatia-backend.vercel.app](https://empatia-backend.vercel.app)
+
+### Database Setup
+
+1. **Local Development**: Use local PostgreSQL or Docker
+2. **Production**: Use Supabase, Neon, or any PostgreSQL provider
+3. **Migrations**: Run `npm run migration:run` after deployment
+
+## 🔄 Development Workflow
 
 ```bash
-# Generar una nueva migración
-npm run migration:generate -- src/migrations/NombreMigracion
+# Start development server
+npm run start:dev
 
-# Ejecutar migraciones pendientes
-npm run migration:run
+# Build for production
+npm run build
 
-# Revertir la última migración
-npm run migration:revert
-
-# Sincronizar esquema (solo desarrollo)
-npm run schema:sync
-
-```
-
-## Testing
-
-```bash
-# Ejecutar tests unitarios
+# Run tests
 npm run test
 
-# Ejecutar tests en modo watch
-npm run test:watch
+# Database operations
+npm run migration:generate -- src/migrations/MigrationName
+npm run migration:run
+npm run migration:revert
 
-# Ejecutar tests e2e
-npm run test:e2e
+# Linting and formatting
+npm run lint
+npm run format
 ```
 
-## Conexión con DBeaver
+## 📚 API Documentation
 
-Para conectar DBeaver a la base de datos:
+### Health Check
+- **GET /health**: Server status and configuration info
 
-1. Abre DBeaver
-2. Crea una nueva conexión PostgreSQL
-3. Configura los parámetros:
-   - Host: localhost
-   - Port: 5432
-   - Database: empatia_sessions
-   - Username: postgres
-   - Password: tu_password
-4. Testea la conexión y conéctate 
+### Psychologists
+- **GET /psychologists**: List all psychologists
+- **GET /psychologists/:id**: Get psychologist details
+- **GET /psychologists/:id/time-slots**: Get available time slots
+
+### Bookings
+- **POST /psychologists/:id/book**: Book a time slot
+
+### Interactive Documentation
+Visit `https://empatia-backend.vercel.app/api` for interactive Swagger documentation.
+
+## 🔗 Links
+
+- **API Documentation**: [https://empatia-backend.vercel.app/api](https://empatia-backend.vercel.app/api)
+- **Frontend Application**: [https://empatia-online-sessions.vercel.app](https://empatia-online-sessions.vercel.app)
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the ISC License. 
