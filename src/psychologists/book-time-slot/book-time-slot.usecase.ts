@@ -1,5 +1,6 @@
 import { Injectable, Logger, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PsychologistRepository } from '../infrastructure/repositories/psychologist.repository';
+import { UserRepository } from '../infrastructure/repositories/user.repository';
 import { BookTimeSlotRequestDto } from './dto/book-time-slot.request.dto';
 import { BookTimeSlotResponseDto } from './dto/book-time-slot.response.dto';
 
@@ -9,14 +10,19 @@ export class BookTimeSlotUseCase {
 
     constructor(
         private readonly psychologistRepository: PsychologistRepository,
+        private readonly userRepository: UserRepository,
     ) { }
 
     async execute(request: BookTimeSlotRequestDto): Promise<BookTimeSlotResponseDto> {
         try {
             const timeSlot = await this.psychologistRepository.findTimeSlotById(request.timeSlotId);
 
-            if (!timeSlot || !timeSlot.available) {
-                throw new NotFoundException('Slot not available.');
+            if (!timeSlot) {
+                throw new NotFoundException('Time slot not found');
+            }
+
+            if (!timeSlot.available) {
+                throw new BadRequestException('Time slot is not available');
             }
 
             if (request.sessionType === 'virtual' && !timeSlot.virtualSession) {
@@ -27,7 +33,7 @@ export class BookTimeSlotUseCase {
                 throw new BadRequestException('This time slot is not available for clinic sessions');
             }
 
-            const user = await this.psychologistRepository.findOrCreateUser({
+            const user = await this.userRepository.findOrCreateUser({
                 name: request.patientName,
                 email: request.patientEmail,
                 phone: request.patientPhone,

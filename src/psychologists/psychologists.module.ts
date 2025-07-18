@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Psychologist, TimeSlot, User } from '../../src/entities';
-
 import { PsychologistRepository } from './infrastructure/repositories/psychologist.repository';
+import { UserRepository } from './infrastructure/repositories/user.repository';
 
 import { GetAllPsychologistsUseCase } from './get-all-psychologists/get-all-psychologists.usecase';
 import { GetAllPsychologistsController } from './get-all-psychologists/get-all-psychologists.controller';
@@ -17,7 +15,6 @@ import { BookTimeSlotUseCase } from './book-time-slot/book-time-slot.usecase';
 import { BookTimeSlotController } from './book-time-slot/book-time-slot.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Psychologist, TimeSlot, User])],
     controllers: [
         GetAllPsychologistsController,
         GetPsychologistWithAvailabilityController,
@@ -26,6 +23,7 @@ import { BookTimeSlotController } from './book-time-slot/book-time-slot.controll
     ],
     providers: [
         PsychologistRepository,
+        UserRepository,
         GetAllPsychologistsUseCase,
         GetPsychologistWithAvailabilityUseCase,
         GetAvailableTimeSlotsUseCase,
@@ -33,6 +31,7 @@ import { BookTimeSlotController } from './book-time-slot/book-time-slot.controll
     ],
     exports: [
         PsychologistRepository,
+        UserRepository,
         GetAllPsychologistsUseCase,
         GetPsychologistWithAvailabilityUseCase,
         GetAvailableTimeSlotsUseCase,

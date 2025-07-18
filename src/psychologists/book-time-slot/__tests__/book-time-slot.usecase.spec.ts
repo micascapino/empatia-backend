@@ -3,10 +3,12 @@ import { BookTimeSlotUseCase } from '../book-time-slot.usecase';
 import { PsychologistRepository } from '../../infrastructure/repositories/psychologist.repository';
 import { BookTimeSlotRequestDto } from '../dto/book-time-slot.request.dto';
 import { TimeSlot, User } from '../../../entities';
+import { UserRepository } from '@/psychologists/infrastructure/repositories/user.repository';
 
 describe('BookTimeSlotUseCase', () => {
   let useCase: BookTimeSlotUseCase;
   let mockPsychologistRepository: jest.Mocked<PsychologistRepository>;
+  let mockUserRepository: jest.Mocked<UserRepository>;
 
   const mockTimeSlot: Partial<TimeSlot> = {
     id: '13184c0e-7983-4f6b-a7a5-9f9aa3f46483',
@@ -53,12 +55,16 @@ describe('BookTimeSlotUseCase', () => {
   beforeEach(() => {
     const mockRepository = {
       findTimeSlotById: jest.fn(),
-      findOrCreateUser: jest.fn(),
       bookTimeSlot: jest.fn()
     };
 
-    useCase = new BookTimeSlotUseCase(mockRepository as any);
+    const mockRepositoryUser = {
+      findOrCreateUser: jest.fn(),
+    };
+
+    useCase = new BookTimeSlotUseCase(mockRepository as any, mockRepositoryUser as any);
     mockPsychologistRepository = mockRepository as any;
+    mockUserRepository = mockRepositoryUser as any;
   });
 
   afterEach(() => {
@@ -68,7 +74,7 @@ describe('BookTimeSlotUseCase', () => {
   describe('execute', () => {
     it('should book a time slot successfully for virtual session', async () => {
       mockPsychologistRepository.findTimeSlotById.mockResolvedValue(mockTimeSlot as TimeSlot);
-      mockPsychologistRepository.findOrCreateUser.mockResolvedValue(mockUser as User);
+      mockUserRepository.findOrCreateUser.mockResolvedValue(mockUser as User);
       mockPsychologistRepository.bookTimeSlot.mockResolvedValue({
         ...mockTimeSlot,
         userId: mockUser.id,
@@ -78,7 +84,7 @@ describe('BookTimeSlotUseCase', () => {
       const result = await useCase.execute(mockRequest);
 
       expect(mockPsychologistRepository.findTimeSlotById).toHaveBeenCalledWith(mockRequest.timeSlotId);
-      expect(mockPsychologistRepository.findOrCreateUser).toHaveBeenCalledWith({
+      expect(mockUserRepository.findOrCreateUser).toHaveBeenCalledWith({
         name: mockRequest.patientName,
         email: mockRequest.patientEmail,
         phone: mockRequest.patientPhone,
@@ -96,9 +102,9 @@ describe('BookTimeSlotUseCase', () => {
 
     it('should book a time slot successfully for clinic session', async () => {
       const clinicRequest = { ...mockRequest, sessionType: 'clinic' as const };
-      
+
       mockPsychologistRepository.findTimeSlotById.mockResolvedValue(mockTimeSlot as TimeSlot);
-      mockPsychologistRepository.findOrCreateUser.mockResolvedValue(mockUser as User);
+      mockUserRepository.findOrCreateUser.mockResolvedValue(mockUser as User);
       mockPsychologistRepository.bookTimeSlot.mockResolvedValue({
         ...mockTimeSlot,
         userId: mockUser.id,
@@ -123,11 +129,12 @@ describe('BookTimeSlotUseCase', () => {
       expect(mockPsychologistRepository.findTimeSlotById).toHaveBeenCalledWith(mockRequest.timeSlotId);
     });
 
-    it('should throw NotFoundException when time slot is not available', async () => {
+    it('should throw BadRequestException when time slot is not available', async () => {
       const unavailableSlot = { ...mockTimeSlot, available: false } as TimeSlot;
       mockPsychologistRepository.findTimeSlotById.mockResolvedValue(unavailableSlot);
 
-      await expect(useCase.execute(mockRequest)).rejects.toThrow(NotFoundException);
+      await expect(useCase.execute(mockRequest)).rejects.toThrow(BadRequestException);
+      expect(mockPsychologistRepository.findTimeSlotById).toHaveBeenCalledWith(mockRequest.timeSlotId);
     });
 
     it('should throw BadRequestException when virtual session is requested but not available', async () => {
@@ -151,7 +158,7 @@ describe('BookTimeSlotUseCase', () => {
       delete requestWithoutPhone.patientPhone;
 
       mockPsychologistRepository.findTimeSlotById.mockResolvedValue(mockTimeSlot as TimeSlot);
-      mockPsychologistRepository.findOrCreateUser.mockResolvedValue(mockUser as User);
+      mockUserRepository.findOrCreateUser.mockResolvedValue(mockUser as User);
       mockPsychologistRepository.bookTimeSlot.mockResolvedValue({
         ...mockTimeSlot,
         userId: mockUser.id,
@@ -160,7 +167,7 @@ describe('BookTimeSlotUseCase', () => {
 
       const result = await useCase.execute(requestWithoutPhone);
 
-      expect(mockPsychologistRepository.findOrCreateUser).toHaveBeenCalledWith({
+      expect(mockUserRepository.findOrCreateUser).toHaveBeenCalledWith({
         name: requestWithoutPhone.patientName,
         email: requestWithoutPhone.patientEmail,
         phone: undefined,
@@ -174,7 +181,7 @@ describe('BookTimeSlotUseCase', () => {
       delete requestWithoutNotes.bookingNotes;
 
       mockPsychologistRepository.findTimeSlotById.mockResolvedValue(mockTimeSlot as TimeSlot);
-      mockPsychologistRepository.findOrCreateUser.mockResolvedValue(mockUser as User);
+      mockUserRepository.findOrCreateUser.mockResolvedValue(mockUser as User);
       mockPsychologistRepository.bookTimeSlot.mockResolvedValue({
         ...mockTimeSlot,
         userId: mockUser.id,
@@ -183,7 +190,7 @@ describe('BookTimeSlotUseCase', () => {
 
       const result = await useCase.execute(requestWithoutNotes);
 
-      expect(mockPsychologistRepository.findOrCreateUser).toHaveBeenCalledWith({
+      expect(mockUserRepository.findOrCreateUser).toHaveBeenCalledWith({
         name: requestWithoutNotes.patientName,
         email: requestWithoutNotes.patientEmail,
         phone: requestWithoutNotes.patientPhone,
