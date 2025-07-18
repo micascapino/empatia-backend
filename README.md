@@ -10,7 +10,6 @@ A robust NestJS backend API for managing online psychology sessions and professi
 - **Time Slot System**: Advanced scheduling system with availability tracking
 - **Booking Engine**: Secure booking flow with session type validation
 - **Real-time Data**: Optimized queries with TypeORM for fast response times
-- **CORS Support**: Configured for seamless frontend integration
 - **API Documentation**: Auto-generated Swagger documentation
 - **Database Migrations**: Version-controlled database schema management
 
@@ -111,16 +110,9 @@ src/
 
 ### Professional Directory API
 - **GET /psychologists**: Retrieve all psychologists with availability counts
-- **GET /psychologists/:id**: Get specific psychologist with detailed profile
-- **Smart Filtering**: Built-in filtering by specialization, rating, and availability
-
-### Time Slot Management
-- **GET /psychologists/:id/time-slots**: Get available time slots for a psychologist
-- **Date Range Queries**: Filter slots by specific date ranges
-- **Availability Tracking**: Real-time availability status updates
-
-### Booking System
-- **POST /psychologists/:id/book**: Complete booking flow
+- **GET /psychologists/:id**: Get specific psychologist with detailed profile and slots availables
+- **GET /psychologists/slots/available**: Get available time slots between two dates
+- **POST /psychologists/slots/book**: Complete booking flow
 - **Session Type Support**: Virtual and clinic session options
 - **User Management**: Automatic user creation and session tracking
 
@@ -183,10 +175,6 @@ src/
 - **Implementation**: TypeORM connection pool with optimized settings
 - **Benefits**: Reduced database load and improved response times
 
-#### **CORS Configuration**
-- **Decision**: Whitelist approach for security
-- **Implementation**: Dynamic CORS configuration based on environment
-- **Security**: Only allows requests from trusted frontend domains
 
 ## 🚀 Deployment
 
@@ -228,33 +216,9 @@ npm run format
 
 ## 📚 API Documentation
 
-### Health Check
-- **GET /health**: Server status and configuration info
-
-### Psychologists
-- **GET /psychologists**: List all psychologists
-- **GET /psychologists/:id**: Get psychologist details
-- **GET /psychologists/:id/time-slots**: Get available time slots
-
-### Bookings
-- **POST /psychologists/:id/book**: Book a time slot
-
-### Interactive Documentation
 Visit `https://empatia-backend.vercel.app/api` for interactive Swagger documentation.
 
 ## 🔗 Links
 
 - **API Documentation**: [https://empatia-backend.vercel.app/api](https://empatia-backend.vercel.app/api)
 - **Frontend Application**: [https://empatia-online-sessions.vercel.app](https://empatia-online-sessions.vercel.app)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the ISC License. 

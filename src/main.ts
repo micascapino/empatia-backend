@@ -37,9 +37,6 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
 
     const port = process.env.PORT || 3001;
-    console.log(`🚀 Servidor iniciado en puerto ${port}`);
-    console.log(`🌐 CORS habilitado para: ${allowedOrigins.join(', ')}`);
-    
     await app.listen(port);
 }
 
